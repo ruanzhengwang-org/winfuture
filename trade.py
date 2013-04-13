@@ -5,7 +5,7 @@ import db.mysqldb as sql
 
 class Trade:
 	def __init__ (self, database, table):
-		self.db = sql.MYSQL("localhost", "root", "19851117", database)
+		self.db = sql.MYSQL("localhost", 'win', 'winfwinf', database)
 		self.db.connect()
 		self.useTable(table)
 		return

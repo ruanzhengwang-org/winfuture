@@ -19,7 +19,7 @@ sqltable = sys.argv[2]
 print "To import the data from [ %s ] to database table [ %s ]" % (datafile, sqltable)
 #exit (0)
 
-db = mysqldb.MYSQL ('localhost', 'root', '19851117', 'futures')
+db = mysqldb.MYSQL ('localhost', 'win', 'winfwinf', 'futures')
 db.connect()
 
 file = open(datafile)

@@ -4,7 +4,7 @@ import db.mysqldb as sql
 
 class Data:
 	def __init__ (self, database):
-		self.db = sql.MYSQL("localhost", "root", "19851117", database)
+		self.db = sql.MYSQL("localhost", 'win', 'winfwinf', database)
 		self.db.connect()
 		return
 	
