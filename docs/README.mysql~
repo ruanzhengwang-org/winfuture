@@ -1,0 +1,40 @@
+
+MYSQL in Winfutre.
+**********************
+
+概要：
+1, 用户和组
+
+========
+
+1, 用户和组
+
+1,1 创建和修改用户密码
+
+	royo@workstation: db $ mysql -u root -p
+	Enter password: 
+	
+	mysql> 
+	mysql> grant all privileges on *.* to win@localhost;
+	Query OK, 0 rows affected (0.00 sec)
+	
+	mysql> 
+	mysql> use mysql;
+	Reading table information for completion of table and column names
+	You can turn off this feature to get a quicker startup with -A
+	
+	Database changed
+	mysql> 
+	mysql> update user set password=PASSWORD('winfwinf') where user='win';
+	Query OK, 1 row affected (0.00 sec)
+	Rows matched: 1  Changed: 1  Warnings: 0
+	
+	mysql> flush privileges;
+	Query OK, 0 rows affected (0.00 sec)
+	
+	mysql> 
+	mysql> quit
+	Bye
+	royo@workstation: db $ 
+	royo@workstation: db $ mysql -u win -p
+	Enter password: 
