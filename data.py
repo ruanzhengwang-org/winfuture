@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-import mysqldb as sql
+import db.mysqldb as sql
 
 class Data:
 	def __init__ (self, database):
