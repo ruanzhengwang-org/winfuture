@@ -77,6 +77,14 @@
 		#print curDay
 	#curDay = time.getSetNextDate()
 	
+#time.setCurDate('2012-12-03')
+#print time.curDate(), time.prevDate(), time.nextDate()
+#time.setCurDate('2012-12-03')
+#print time.curDate(), time.getSetNextDate(), time.curDate()
+#time.setCurDate('2012-12-03')
+#print time.curDate(), time.getSetPrevDate(), time.curDate()
+
+	
 
 #===Test Trade=====#
 
