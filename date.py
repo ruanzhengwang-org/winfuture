@@ -34,6 +34,11 @@ class Date:
 			return self.dateSet[self.dateIndex + 1][0]
 		return None
 		
+	def prevDate (self):
+		if self.dateIndex - 1 >= 0:
+			return self.dateSet[self.dateIndex - 1][0]
+		return None
+			
 	def setCurDate (self, day):
 		#print day
 		#time = '%s' % (self.dateSet[0][0])
@@ -55,3 +60,10 @@ class Date:
 		else:
 			return None
 	
+	def getSetPrevDate (self):
+		if self.dateIndex - 1 >= 0:
+			self.dateIndex = self.dateIndex - 1
+			return self.dateSet[self.dateIndex][0]
+		else:
+			return None
+			
