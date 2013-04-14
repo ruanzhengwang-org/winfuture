@@ -3,8 +3,9 @@
 import db.mysqldb as sql
 
 class Data:
-	def __init__ (self, database):
+	def __init__ (self, database, table):
 		self.db = sql.MYSQL("localhost", 'win', 'winfwinf', database)
+		self.table = table
 		self.db.connect()
 		return
 	
@@ -26,28 +27,28 @@ class Data:
 	def avg (self, data, count):
 		return self.sum(data) / count
 	
-	def M (self, table, date, filed='Close', days=1):
+	def M (self, date, filed='Close', days=1):
 		cond = 'Time <= "%s" order by Time desc limit %d' % (date, days)
 		#print cond
-		num = self.db.search(table, cond, filed)
+		num = self.db.search(self.table, cond, filed)
 		res = self.db.fetch('all')
 		#print res
 		#print res[0][0]
 
 		return self.avg(res, num)
 	
-	def M5 (self, table, date, filed='Close'):
-		return self.M(table, date, filed, 5)
+	def M5 (self, date, filed='Close'):
+		return self.M(date, filed, 5)
 	
-	def M10 (self, table, date, filed='Close'):
-		return self.M(table, date, filed, 10)
+	def M10 (self, date, filed='Close'):
+		return self.M(date, filed, 10)
 	
-	def M20 (self, table, date, filed='Close'):
-		return self.M(table, date, filed, 20)
+	def M20 (self, date, filed='Close'):
+		return self.M(date, filed, 20)
 	
-	def M40 (self, table, date, filed='Close'):
-		return self.M(table, date, filed, 40)
+	def M40 (self, date, filed='Close'):
+		return self.M(date, filed, 40)
 	
-	def M60 (self, table, date, filed='Close'):
-		return self.M(table, date, filed, 60)
+	def M60 (self, date, filed='Close'):
+		return self.M(date, filed, 60)
 	
