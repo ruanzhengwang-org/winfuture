@@ -4,21 +4,21 @@
 
 #import data
 
-#dat = data.Data('futures')
-#res = dat.M('m1305_day_k', '2012-12-20', 'Close', 5)
+#dat = data.Data('futures', 'm1305_day_k')
+#res = dat.M('2012-12-20', 'Close', 5)
 #print res
-#res = dat.M5('m1305_day_k', '2012-12-20', 'Close')
+#res = dat.M5('2012-12-20', 'Close')
 #print res
-#res = dat.M('m1305_day_k', '2012-12-20', 'Open', 2)
+#res = dat.M('2012-12-20', 'Open', 2)
 #print res
-#res = dat.M('m1305_day_k', '2012-12-20', 'Close', 10)
+#res = dat.M('2012-12-20', 'Close', 10)
 #print res
-#res = dat.M('m1305_day_k', '2012-05-31', 'Close', 2)
+#res = dat.M('2012-05-31', 'Close', 2)
 #print res
-#res = dat.M5('m1305_day_k', '2012-05-31', 'Close')
+#res = dat.M5('2012-05-31', 'Close')
 #print res
 
-#res = dat.M5('m1305_5m', '2013-01-11 14:55', 'Close')
+#res = dat.M5('2013-01-11 14:55', 'Close')
 #print res
 
 
@@ -80,9 +80,9 @@
 
 #===Test Trade=====#
 
-import trade
+#import trade
 
-trd = trade.Trade('futures', 'trade_rec1')
+#trd = trade.Trade('futures', 'trade_rec1')
 
 #trd.openTrade('T0001', 'm1305', '2013-1-14 14:35:48', 'D', '1,2,3', 3360, 3, 'Increase greatly', 0, 'Danger')
 #trd.openDTrade('T0001', 'm1305', '2013-1-14 14:35:48', '1,2,3', 3360, 3, 'Increase greatly', 0, 'Danger')
@@ -100,3 +100,6 @@ trd = trade.Trade('futures', 'trade_rec1')
 #db = sql.MYSQL("localhost", "root", "19851117", 'futures')
 #db.connect()
 #db.drop('trade_rec4')
+
+
+
