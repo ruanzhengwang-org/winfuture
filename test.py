@@ -55,25 +55,25 @@
 #time = date.Date('futures', 'm1305_day_k')
 #curDay = time.curDate()
 
-#dat = data.Data('futures')
+#dat = data.Data('futures', 'm1305_day_k')
 
 #while curDay is not None:
-	#print curDay, dat.M('m1305_day_k', curDay, 'Close', 1), dat.M5('m1305_day_k', curDay, 'Close')
-	#if dat.M('m1305_day_k', curDay, 'Close', 1) < dat.M5('m1305_day_k', curDay, 'Close'):
+	#print curDay, dat.M(curDay, 'Close', 1), dat.M5(curDay, 'Close')
+	#if dat.M(curDay, 'Close', 1) < dat.M5(curDay, 'Close'):
 		#print curDay
 	#curDay = time.getSetNextDate()
 		
 	
 #while curDay is not None:
-	#print curDay, dat.M('m1305_day_k', curDay, 'Close', 1), dat.M10('m1305_day_k', curDay, 'Close')
-	#if dat.M('m1305_day_k', curDay, 'Close', 1) < dat.M10('m1305_day_k', curDay, 'Close'):
+	#print curDay, dat.M(curDay, 'Close', 1), dat.M10(curDay, 'Close')
+	#if dat.M(curDay, 'Close', 1) < dat.M10(curDay, 'Close'):
 		#print curDay
 	#curDay = time.getSetNextDate()
 	
 	
 #while curDay is not None:
-	#print curDay, dat.M('m1305_day_k', curDay, 'Close', 1), dat.M20('m1305_day_k', curDay, 'Close')
-	#if dat.M('m1305_day_k', curDay, 'Close', 1) < dat.M20('m1305_day_k', curDay, 'Close'):
+	#print curDay, dat.M(curDay, 'Close', 1), dat.M20(curDay, 'Close')
+	#if dat.M(curDay, 'Close', 1) < dat.M20(curDay, 'Close'):
 		#print curDay
 	#curDay = time.getSetNextDate()
 	
