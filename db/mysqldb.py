@@ -20,18 +20,11 @@ class MYSQL(db.DB):
 			
 	def execSql (self, sqls):
 		if self.cursor == None:
-				return
-		
-		#print sqls
-		
+			return
 		try:
 			res = self.cursor.execute(sqls)
-			#1/0
 		except :
 			exc.logExcSql()
-			#print traceback.format_exc ()
-		#res = self.cursor.execute(sqls)
-
 		return res
 	
 	def fetch (self, line=0):
@@ -46,12 +39,12 @@ class MYSQL(db.DB):
 	
 	def search (self, table, cond, field="*"):
 		if self.cursor == None:
-				return
+			return
 	
 		if cond == None:
-				sqls = "select %s from %s" % (field, table)
+			sqls = "select %s from %s" % (field, table)
 		else:
-				sqls = "select %s from %s where %s " % (field, table, cond)
+			sqls = "select %s from %s where %s " % (field, table, cond)
 		
 		res = self.execSql(sqls)
 		return res
