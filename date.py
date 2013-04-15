@@ -29,6 +29,12 @@ class Date:
 			return self.dateSet[self.dateIndex][0]
 		return None
 	
+	def firstDate (self):
+		return self.dateSet[0][0]
+	
+	def lastDate (self):
+		return self.dateSet[self.indexBound - 1][0]
+	
 	def nextDate (self):
 		if self.dateIndex + 1 < self.indexBound:
 			return self.dateSet[self.dateIndex + 1][0]
