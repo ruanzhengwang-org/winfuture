@@ -51,7 +51,7 @@ class MYSQL(db.DB):
 	
 	def insert (self, table, values):
 		if self.cursor == None:
-				return 
+			return 
 		
 		sqls = "insert into %s values ( %s )" % (table, values)
 		res = self.execSql(sqls)
@@ -59,7 +59,7 @@ class MYSQL(db.DB):
 	
 	def update (self, table, cond, values):
 		if self.cursor == None:
-				return
+			return
 				
 		sqls = "update %s set %s where %s" % (table, values, cond)
 		res = self.execSql(sqls)
@@ -67,7 +67,7 @@ class MYSQL(db.DB):
 			
 	def remove (self, table, cond):
 		if self.cursor == None:
-				return
+			return
 		
 		sqls = "delete from %s where %s" % (table, cond)
 		res = self.execSql(sqls)
