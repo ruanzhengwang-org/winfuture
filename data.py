@@ -52,3 +52,15 @@ class Data:
 	def M60 (self, date, filed='Close'):
 		return self.M(date, filed, 60)
 	
+	def getOpen (self, date):
+		return self.M(date, 'Open', 1)
+	
+	def getClose (self, date):
+		return self.M(date, 'Close', 1)
+	
+	def getHighest (self, date):
+		return self.M(date, 'Highest', 1)
+	
+	def getLowest (self, date):
+		return self.M(date, 'Lowest', 1)
+	
