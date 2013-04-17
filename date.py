@@ -35,16 +35,32 @@ class Date:
 	def lastDate (self):
 		return self.dateSet[self.indexBound - 1][0]
 	
-	def nextDate (self):
-		if self.dateIndex + 1 < self.indexBound:
-			return self.dateSet[self.dateIndex + 1][0]
+	def nextDate (self, date):
+		i = 0
+		while i < self.indexBound:
+			time = '%s' % (self.dateSet[i][0])
+			if time == date:
+				if i+1 < self.indexBound:
+					return self.dateSet[i+1][0]
+				else:
+					return None
+			i = i + 1
+
 		return None
-		
-	def prevDate (self):
-		if self.dateIndex - 1 >= 0:
-			return self.dateSet[self.dateIndex - 1][0]
+	
+	def prevDate (self, date):
+		i = 0
+		while i < self.indexBound:
+			time = '%s' % (self.dateSet[i][0])
+			if time == date:
+				if i-1 >= 0:
+					return self.dateSet[i-1][0]
+				else:
+					return None	
+			i = i + 1
+
 		return None
-			
+
 	def setCurDate (self, day):
 		#print day
 		#time = '%s' % (self.dateSet[0][0])
