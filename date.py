@@ -33,7 +33,21 @@ class Date:
 		return self.dateSet[0][0]
 	
 	def lastDate (self):
-		return self.dateSet[self.indexBound - 1][0]
+		return self.dateSet[self.indexBound-1][0]
+	
+	def isFirstDate (self, date):
+		time = '%s' % (self.dateSet[0][0])
+		if time == date:
+			return True
+		else:
+			return False
+	
+	def isLastDate (self, date):
+		time = '%s' % (self.dateSet[self.indexBound-1][0])
+		if time == date:
+			return True
+		else:
+			return False
 	
 	def nextDate (self, date):
 		i = 0
