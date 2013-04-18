@@ -12,15 +12,15 @@ class MYSQL(db.DB):
 	def connect (self):
 		self.conn = sql.connect(self.host, self.user, self.passwd, self.db)
 		self.cursor = self.conn.cursor()
-		return
+		return True
 			
 	def setDefTable (self, table):
 		self.table = table
-		return
+		return True
 			
 	def execSql (self, sqls):
 		if self.cursor == None:
-			return
+			return None
 		try:
 			res = self.cursor.execute(sqls)
 		except :
@@ -28,6 +28,9 @@ class MYSQL(db.DB):
 		return res
 	
 	def fetch (self, line=0):
+		if self.cursor == None:
+			return None
+			
 		res = self.cursor.fetchall()
 			
 		if line == 'all':
@@ -35,11 +38,11 @@ class MYSQL(db.DB):
 		elif type(line) is types.IntType:
 			return res[line]
 		else:
-			return
+			return None
 	
 	def search (self, table, cond, field="*"):
 		if self.cursor == None:
-			return
+			return None
 	
 		if cond == None:
 			sqls = "select %s from %s" % (field, table)
@@ -51,7 +54,7 @@ class MYSQL(db.DB):
 	
 	def insert (self, table, values):
 		if self.cursor == None:
-			return 
+			return None
 		
 		sqls = "insert into %s values ( %s )" % (table, values)
 		res = self.execSql(sqls)
@@ -59,7 +62,7 @@ class MYSQL(db.DB):
 	
 	def update (self, table, cond, values):
 		if self.cursor == None:
-			return
+			return None
 				
 		sqls = "update %s set %s where %s" % (table, values, cond)
 		res = self.execSql(sqls)
@@ -67,7 +70,7 @@ class MYSQL(db.DB):
 			
 	def remove (self, table, cond):
 		if self.cursor == None:
-			return
+			return None
 		
 		sqls = "delete from %s where %s" % (table, cond)
 		res = self.execSql(sqls)
