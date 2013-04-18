@@ -4,6 +4,7 @@ MYSQL in Winfutre.
 
 概要：
 1, 用户和组
+*FAQ*
 
 ========
 
@@ -100,3 +101,19 @@ MYSQL in Winfutre.
 	如果出错: 
 	sudo easy_install -U distribute，再执行4)步。	
 	===
+
+
+
+*FAQ*
+========
+1. mysq启动异常
+	1.1 启动出现如下错：
+	****
+	$ mysql -u win -p
+	Enter password: 
+	ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock' (2)
+	****
+	解决：
+		$ sudo /etc/init.d/ mysql restart
+		$ mysql -u win -p
+	
