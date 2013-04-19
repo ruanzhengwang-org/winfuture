@@ -75,14 +75,14 @@ class Date:
 
 		return None
 
-	def setCurDate (self, day):
-		#print day
+	def setCurDate (self, date):
+		#print date
 		#time = '%s' % (self.dateSet[0][0])
 		#print time
 		i = 0
 		while i < self.indexBound:
 			time = '%s' % (self.dateSet[i][0])
-			if time == day:
+			if time == date:
 				self.dateIndex = i
 				return i
 			i = i + 1
