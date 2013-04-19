@@ -51,7 +51,11 @@ def test_date():
 	
 	res = time.isFirstDate('2012-05-31')
 	print res
+	res = time.isFirstDate('2012-12-28')
+	print res	
 	res = time.isLastDate('2012-12-28')
+	print res
+	res = time.isLastDate('2012-05-31')
 	print res
 
 if __name__=='__main__':
