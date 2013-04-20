@@ -10,18 +10,21 @@ import strategy as STRT
 #
 
 class Futures(STRT.Strategy):
-	def openPosition (self):
-		return
-	
 	def openShortPostion (self):
 		return
 		
 	def openLongPostion (self):
 		return
-			
-	def closePosition (self):
+		
+	def closeShortPostion (self):
+		return
+		
+	def closeLongPostion (self):
+		return
+		
+	def isBreakThrough (self):
 		return
 	
-	def isBreakThrough (self):
+	def run (self):
 		return
 	
