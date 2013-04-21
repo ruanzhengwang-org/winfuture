@@ -7,7 +7,6 @@ import MySQLdb as sql
 import db
 import exc
 
-
 class MYSQL(db.DB):
 	def connect (self):
 		self.conn = sql.connect(self.host, self.user, self.passwd, self.db)
@@ -23,9 +22,9 @@ class MYSQL(db.DB):
 			return None
 		try:
 			res = self.cursor.execute(sqls)
+			return res
 		except :
 			exc.logExcSql()
-		return res
 	
 	def fetch (self, line=0):
 		if self.cursor == None:
