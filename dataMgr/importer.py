@@ -36,13 +36,16 @@ class Import:
 	
 	# Reimport to records between date $Tfrom to date $tTo from 
 	# self.table to new $table
-	def partReimportTo(self, table, tFrom, tTo):
+	def partReimportTo(self, table, tFrom, tTo=None):
 		if self.db.ifTableExist(self.dataTable) == False:
 			return
 		
 		self.prepareImport(table)
 		
-		sqls = 'insert %s (select * from %s where Time >= \'%s\' and Time <= \'%s\' order by Time asc)' % (table, self.dataTable, tFrom, tTo)
+		if (tTo is None):
+			sqls = 'insert %s (select * from %s where Time >= \'%s\' order by Time asc)' % (table, self.dataTable, tFrom)
+		else:
+			sqls = 'insert %s (select * from %s where Time >= \'%s\' and Time <= \'%s\' order by Time asc)' % (table, self.dataTable, tFrom, tTo)
 		
 		res = self.db.execSql(sqls)
 		
