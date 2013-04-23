@@ -92,3 +92,20 @@ class MYSQL(db.DB):
 	
 	#def attrSetNotNull (self, table, field):
 		#return
+		
+	def ifTableExist (self, table):
+		sqls = 'show tables like \'%s\'' % (table)
+		res = self.execSql(sqls)
+		if res == 1:
+			return True
+		else:
+			return False
+		
+	def createTableTemplate (self, table, template):
+		if self.ifTableExist(table):
+			return
+			
+		sqls = 'create table %s like %s' % (table, template)
+		res = self.execSql(sqls)
+		return res
+	
