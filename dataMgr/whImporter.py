@@ -14,7 +14,7 @@ class WenhuaImport(IMPORT.Import):
 		return
 	
 	#def wenhuaImport (self, tFrom, tTo):
-	def wenhuaNewImport (self):
+	def newImport (self):
 		self.prepareImport(self.dataTable)
 		
 		for line in fileinput.input(self.dataFile):
