@@ -1,26 +1,20 @@
 #! /usr/bin/python
 
+import os
 import db.mysqldb as sql
 
 class Import:
-	def __init__ (self, dataFile, dataTable, database='futures'):
+	def __init__ (self, database='futures'):
 		self.db = sql.MYSQL("localhost", 'win', 'winfwinf', database)
 		self.db.connect()
-		self.dataFile = dataFile
-		self.dataTable = dataTable
 		return
 	
 	def __exit__ (self):
 		self.db.close()
 		return
 	
-	def setAttrs (self, dataFile, dataTable):
-		self.dataFile = dataFile
-		self.dataTable = dataTable
-		return
-		
-	# Prepare to import records from $self.dataFile to $self.dataTable.
-	# If $self.dataTable does not exist, create it using template.
+	# Prepare to import records from $dataFile to $dataTable.
+	# If dataTable does not exist, create it using template.
 	def prepareImport(self, table, tableType='dayk'):
 		if self.db.ifTableExist(table):
 			return True
@@ -30,25 +24,33 @@ class Import:
 			
 		self.db.createTableTemplate(table, template)
 		
-	# Newly import data records from $self.dataFile to $self.dataTable
-	def newImport (self):
+	# Newly import data records from $dataFile to $dataTable
+	def newImport (self, dataFile, dataTable):
 		return
 	
-	# Reimport to records between date $Tfrom to date $tTo from 
-	# self.table to new $table
-	def partReimportTo(self, table, tFrom, tTo=None):
-		if self.db.ifTableExist(self.dataTable) == False:
+	# Reimport a part of records between date $Tfrom to date $tTo from 
+	# tableFrom to new tableTo
+	def partReimport(self, tableFrom, tableTo, tFrom, tTo=None):
+		if self.db.ifTableExist(tableFrom) == False:
 			return
 		
-		self.prepareImport(table)
+		self.prepareImport(tableTo)
 		
 		if (tTo is None):
-			sqls = 'insert %s (select * from %s where Time >= \'%s\' order by Time asc)' % (table, self.dataTable, tFrom)
+			sqls = 'insert %s (select * from %s where Time >= \'%s\' order by Time asc)' % (tableTo, tableFrom, tFrom)
 		else:
-			sqls = 'insert %s (select * from %s where Time >= \'%s\' and Time <= \'%s\' order by Time asc)' % (table, self.dataTable, tFrom, tTo)
+			sqls = 'insert %s (select * from %s where Time >= \'%s\' and Time <= \'%s\' order by Time asc)' % (tableTo, tableFrom, tFrom, tTo)
 		
 		res = self.db.execSql(sqls)
 		
 		#print 'partReimportTo'
 		return res
 		
+	# Get value from the field specifed by $field from a record.
+	def getRecordField(self, record, field=1):
+		cmdStr = 'echo "%s" | awk \'{print $%d}\' ' % (record, field)
+		res = os.popen(cmdStr.strip())
+		#print res.read().strip()
+		#print res
+		return res.read().strip()
+	
