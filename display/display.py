@@ -25,44 +25,42 @@
 import sys, os
 
 colorTxt={
-        #Colors for text
-        "bl":'30',    #black
-        "r" :'31',    #red
-        "g" :'32',    #green
-        "y" :'33',    #yellow
-        "b" :'34',    #blue
-        "p" :'35',    #purple
-        "c" :'36',    #cyan
-        "w" :'37'     #white
-        }
+	#Colors for text
+	"bl":'30',	#black
+	"r" :'31',	#red
+	"g" :'32',	#green
+	"y" :'33',	#yellow
+	"b" :'34',	#blue
+	"p" :'35',	#purple
+	"c" :'36',	#cyan
+	"w" :'37'	#white
+}
 
 colorBg={
-        #Colors for background
-        "bl":'40',    #black
-        "r" :'41',    #red
-        "g" :'42',    #green
-        "y" :'43',    #yellow
-        "b" :'44',    #blue
-        "p" :'45',    #purple
-        "c" :'46',    #cyan
-        "w" :'47'     #white
-        }
-
+	#Colors for background
+	"bl":'40',	#black
+	"r" :'41',	#red
+	"g" :'42',	#green
+	"y" :'43',	#yellow
+	"b" :'44',	#blue
+	"p" :'45',	#purple
+	"c" :'46',	#cyan
+	"w" :'47'	#white
+}
 colorAttr={
+#Colors for attribute
+	"def":'0',	#default
+	"bld":'1',	#blod
+	"und":'4',	#underline
+	"bli":'5',	#blink
+	"inv":'7'	#invert
+}
 
-        #Colors for attribute
-        "def"   :'0',     #default
-        "bld"   :'1',     #blod
-        "und"   :'4',     #underline
-        "bli"   :'5',     #blink
-        "inv"   :'7'      #invert
-        }
 
-		
 class COLORS:
 
 	def __init__(self):
-		self.templete={"def":"0;;"}		
+		self.templete={"def":"0;;"}
 
 	def addTemplete(self, keyword, attr='0', text='', background=''):
 		self.templete[keyword]= ';'.join([attr, text, background])
@@ -88,7 +86,7 @@ class PrintColor(COLORS):
 				value_formed = self.start % form
 				output += value_formed+str(value)
 			output += self.end
-			
+
 		except KeyError, e:
 			print "Error: %d, %s" % (e.args[0], e.args[1])
 			print "There is no keyword %s in the templete, please check" % key
@@ -105,11 +103,11 @@ def testColors():
 				color = "\033[%d;%d;%dm" % (atrr,fore,back)
 				print "%s %d-%d-%d\033[0m" % (color,atrr,fore,back),
 			print ""
-                        
+
                         
 if __name__ == "__main__":
-    	""" """
- 	#testColors()
+	""" """
+	#testColors()
 	dis=PrintColor()
 	dis.addTemplete("dgw",colorAttr['def'],colorTxt['g'],colorBg['w'])
 	dis.addTemplete("drw",colorAttr['def'],colorTxt['r'],colorBg['w'])
