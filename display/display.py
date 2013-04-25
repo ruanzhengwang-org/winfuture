@@ -24,7 +24,7 @@
 """
 import sys, os
 
-clr_t={
+colorTxt={
         #Colors for text
         "bl":'30',    #black
         "r" :'31',    #red
@@ -36,7 +36,7 @@ clr_t={
         "w" :'37'     #white
         }
 
-clr_b={
+colorBg={
         #Colors for background
         "bl":'40',    #black
         "r" :'41',    #red
@@ -48,7 +48,8 @@ clr_b={
         "w" :'47'     #white
         }
 
-clr_a={
+colorAttr={
+
         #Colors for attribute
         "def"   :'0',     #default
         "bld"   :'1',     #blod
@@ -60,63 +61,59 @@ clr_a={
 		
 class COLORS:
 
-    def __init__(self):
-        self.templete={"def":"0;;"}		
+	def __init__(self):
+		self.templete={"def":"0;;"}		
 
-    def add_temp(self, keyword, attr='0', text='', background=''):
-        self.templete[keyword]= ';'.join([attr, text, background])
+	def addTemplete(self, keyword, attr='0', text='', background=''):
+		self.templete[keyword]= ';'.join([attr, text, background])
         
         
-class Print_Clr(COLORS):
-    def __init__(self):
-	COLORS.__init__(self)
-    def print_clr_win32(self, *args):
-        print ' '.join(args)
-        
-    def print_clr_linux(self, args):
-        start="\x1B[%sm"
-        end="\x1B[0m"
-	output=''
- 	try:
-            for (key,value) in args:
-        #        print key+value
-	        form = self.templete[key]
-                value_formed = start % form
-                output += value_formed+str(value)
-            output += end
-        #    print output
-        except KeyError, e:
-            print "Error: %d, %s" % (e.args[0], e.args[1])
-            print "There is no keyword %s in the templete, please check" % key
-            sys.exit(1) 
-	finally:
-	    print output
+class PrintColor(COLORS):
 
-    def print_clr(self, *args):
-        if sys.platform.find("win") != -1:
-            self.print_clr_win32(self, args)
-        else:
-            self.print_clr_linux(args)
-        
+	def __init__(self):
+		COLORS.__init__(self)
+		if sys.platform.find("win") != -1:
+			self.start = "%s"
+			self.end=''
+		else:
+			self.start = "\x1B[%sm"
+			self.end = "\x1B[0m"
 
-def test_colors():
-    """ """
-    for atrr in iter([0,1,4,5,7]):
-        print "attribute %d ------------------------------" % atrr
-        for fore in [30,31,32,33,34,35,36,37]:
-            for back in [40,41,42,43,44,45,46,47]:
-                color = "\033[%d;%d;%dm" % (atrr,fore,back)
-                print "%s %d-%d-%d\033[0m" % (color,atrr,fore,back),
-            print ""
+	def printColor(self, *args):
+		output = ''
+		try:
+			for (key,value) in args:
+			#	print key+value
+				form = self.templete[key]
+				value_formed = self.start % form
+				output += value_formed+str(value)
+			output += self.end
+			
+		except KeyError, e:
+			print "Error: %d, %s" % (e.args[0], e.args[1])
+			print "There is no keyword %s in the templete, please check" % key
+			sys.exit(1) 
+		finally:
+			print output
+
+def testColors():
+	""" """
+	for atrr in iter([0,1,4,5,7]):
+		print "attribute %d ------------------------------" % atrr
+		for fore in [30,31,32,33,34,35,36,37]:
+			for back in [40,41,42,43,44,45,46,47]:
+				color = "\033[%d;%d;%dm" % (atrr,fore,back)
+				print "%s %d-%d-%d\033[0m" % (color,atrr,fore,back),
+			print ""
                         
                         
 if __name__ == "__main__":
     	""" """
- 	#test_colors()
-	dis=Print_Clr()
-	dis.add_temp("dgw",clr_a['def'],clr_t['g'],clr_b['w'])
-	dis.add_temp("drw",clr_a['def'],clr_t['r'],clr_b['w'])
-	dis.add_temp("dbbl",clr_a['def'],clr_t['b'],clr_b['bl'])
+ 	#testColors()
+	dis=PrintColor()
+	dis.addTemplete("dgw",colorAttr['def'],colorTxt['g'],colorBg['w'])
+	dis.addTemplete("drw",colorAttr['def'],colorTxt['r'],colorBg['w'])
+	dis.addTemplete("dbbl",colorAttr['def'],colorTxt['b'],colorBg['bl'])
 	print dis.templete
 	args=[]
 	args.append(('dgw','dgw'))
@@ -125,5 +122,5 @@ if __name__ == "__main__":
 	args.append(('dbbl','abcd'))
 	#args.append(('wrong','wrong'))
 	print args
-	dis.print_clr(*args)
+	dis.printColor(*args)
 
