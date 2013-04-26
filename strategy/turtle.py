@@ -49,7 +49,8 @@ class Turtle(FUT.Futures):
 		self.minPos = None
 		self.minPosIntv = None
 		self.pList = []
-		self.profit = 0	
+		self.totalProfit = 0
+		self.profit = 0
 		#print "Turtle initialized!"
 		return
 	
@@ -193,7 +194,8 @@ class Turtle(FUT.Futures):
 		return self.data.highestByDate(date, days, field)
 	
 	def showProfit (self):
-		print "		****** Total profit %s ******" % (self.profit)	
+		print "		++++++ Business profit %s ++++++" % (self.profit)
+		print "		****** Total profit %s ******" % (self.totalProfit)
 	
 	# Position Management Methods.
 	def curPostion (self):
@@ -201,60 +203,63 @@ class Turtle(FUT.Futures):
 	
 	def emptyPostion (self):
 		self.pList = []
+		self.profit = 0
 	
 	def openShortPostion (self, price):
-		if len(self.pList) >= self.maxPos:
+		if self.curPostion() >= self.maxPos:
 			return
 		self.pList.append(price)
-		print "		-->> Open: %s, poses %s <<--" % (price, len(self.pList))
-		return len(self.pList)
+		print "		-->> Open: %s, poses %s <<--" % (price, self.curPostion())
+		return self.curPostion()
 		
 	def openLongPostion (self, price):
-		if len(self.pList) >= self.maxPos:
+		if self.curPostion() >= self.maxPos:
 			return
 		self.pList.append(price)
-		print "		-->> Open: %s, poses %s <<--" % (price, len(self.pList))
-		return len(self.pList)
+		print "		-->> Open: %s, poses %s <<--" % (price, self.curPostion())
+		return self.curPostion()
 		
 	def closeShortPostion (self, price):
-		if len(self.pList) == 0:
+		if self.curPostion() == 0:
 			return
 		profit = self.pList.pop() - price
-		self.profit = self.profit + profit
-		print "		<<-- Close: profit %s, poses %s -->>" % (profit, len(self.pList))
-		if len(self.pList) == 0:
+		self.profit += profit
+		self.totalProfit += profit
+		print "		<<-- Close: profit %s, poses %s -->>" % (profit, self.curPostion())
+		if self.curPostion() == 0:
 			self.showProfit()
 			
-		return len(self.pList)
+		return self.curPostion()
 	
 	def closeLongPostion (self, price):
-		if len(self.pList) == 0:
+		if self.curPostion() == 0:
 			return
 		profit = price - self.pList.pop()
-		self.profit = self.profit + profit
-		print "		<<-- Close: profit %s, poses %s -->>" % (profit, len(self.pList))
-		if len(self.pList) == 0:
+		self.profit += profit
+		self.totalProfit += profit
+		print "		<<-- Close: profit %s, poses %s -->>" % (profit, self.curPostion())
+		if self.curPostion() == 0:
 			self.showProfit()
 			
-		return len(self.pList)
+		return self.curPostion()
 		
 	def closeAllPostion (self, price, short):
-		while len(self.pList):
+		while self.curPostion():
 			if short is 'short':
 				poses = self.closeShortPostion(price)
 			else:
 				poses = self.closeLongPostion(price)
 					
-		return len(self.pList)
+		return self.curPostion()
 			
 	def closeMultPostion (self, poses, price, short):
 		i = 0
-		while len(self.pList) and i < poses:
+		while self.curPostion() and i < poses:
 			if short is 'short':
 				poses = self.closeShortPostion(price)
 			else:
 				poses = self.closeLongPostion(price)
 			i = i + 1
 		
-		return len(self.pList)
+		return self.curPostion()
 		
