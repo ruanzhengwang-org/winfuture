@@ -57,7 +57,7 @@ class Turtle(FUT.Futures):
 	def __exit__ (self):
 		return
 	
-	# Helper
+	# Below are helper functions used to update Tr and Atr, and only used locally.
 	def __updateTr (self, table, time, ltr):
 		#print time, 'ltr', ltr
 		turtDat = TurtData(self.database, table)
@@ -98,9 +98,8 @@ class Turtle(FUT.Futures):
 
 		return ltr
 		
-	def atr (self, table=None):
-		if table is None:
-			table = self.dataTable
+	def atr (self):
+		table = self.dataTable
 	
 		i = 0
 		atr = 0
@@ -185,11 +184,11 @@ class Turtle(FUT.Futures):
 
 			time= lcDateSet.getSetNextDate()
 	
-	# Get the 'lowest' in $days before $date.
+	# Get the lowest value for a field within recent $days counted from $date.
 	def lowestByDate (self, date, days, field='Close'):
 		return self.data.lowestByDate(date, days, field)
 		
-	# Get the 'highest' in $days before $date.
+	# Get the highest value for a field within recent $days counted from $date.
 	def highestByDate (self, date, days, field='Close'):
 		return self.data.highestByDate(date, days, field)
 	
