@@ -13,6 +13,7 @@ class WenhuaImport(IMPORT.Import):
 		IMPORT.Import.__exit__(self)
 		return
 	
+	# Import all records from a file into a datatable.
 	def newImport (self, dataFile, dataTable):
 		self.prepareImport(dataTable)
 		
@@ -26,14 +27,89 @@ class WenhuaImport(IMPORT.Import):
 			values = values + ', Null' + ', Null'
 			#print values
 			self.db.insert(dataTable, values)
+	
+	# Check if a record exists in a datatable.
+	# Existed, return 1, otherwise return 0.
+	def recordExistInTable (self, record, dataTable):
+		time = self.getRecordFieldSepByComma(record, 1)
+		
+		sqls = 'select * from %s where Time = "%s"' % (dataTable, time)
+		res = self.db.execSql(sqls)
+		#print res
+		return res
+	
+	# Append a record at the end of a datatable.
+	def appendRecord (self, record, dataTable):
+		if self.recordExistInTable(record, dataTable):
+			return True
+		
+		time = self.getRecordFieldSepByComma(record, 1)
+		oPrice = self.getRecordFieldSepByComma(record, 2)
+		hPrice = self.getRecordFieldSepByComma(record, 3)
+		lPrice = self.getRecordFieldSepByComma(record, 4)
+		cPrice = self.getRecordFieldSepByComma(record, 5)
+		avgPrice = self.getRecordFieldSepByComma(record, 6)
+		sellVol = self.getRecordFieldSepByComma(record, 7)
+		buyVol = self.getRecordFieldSepByComma(record, 8)
+		
+		#print time, oPrice, hPrice, lPrice, cPrice, avgPrice, sellVol, buyVol
+		
+		values = '"%s", %s, %s, %s, %s, %s, %s, %s, Null, Null' % (time, oPrice, hPrice, lPrice, cPrice, avgPrice, sellVol, buyVol)
+		self.db.insert(dataTable, values)
+		
+		return True
+	
+	# Omit all records which exist in datable, only append the records which does not 
+	# exist at the end of datatable.
+	def appendRecordsOnly (self, dataFile, dataTable):
+		self.prepareImport(dataTable)
+		
+		for line in fileinput.input(dataFile):
+			self.appendRecord(line.strip(), dataTable)
 			
+	# Append and possibly update a record in datatable. If the record does not 
+	# exist, append it, othewise, update this record in datatable as passed $record.
+	def appendUpdateToTable (self, record, dataTable):
+		if self.recordExistInTable(record, dataTable) == 0:
+			return self.appendRecord(record, dataTable)
+		
+		# Record exists in datatable, update it.
+		time = self.getRecordFieldSepByComma(record, 1)
+		oPrice = self.getRecordFieldSepByComma(record, 2)
+		hPrice = self.getRecordFieldSepByComma(record, 3)
+		lPrice = self.getRecordFieldSepByComma(record, 4)
+		cPrice = self.getRecordFieldSepByComma(record, 5)
+		avgPrice = self.getRecordFieldSepByComma(record, 6)
+		sellVol = self.getRecordFieldSepByComma(record, 7)
+		buyVol = self.getRecordFieldSepByComma(record, 8)
+		
+		#print time, oPrice, hPrice, lPrice, cPrice, avgPrice, sellVol, buyVol
+		
+		values = 'Open=%s,' % oPrice
+		values += 'Highest=%s,' % hPrice
+		values += 'Lowest=%s,' % lPrice
+		values += 'Close=%s,' % cPrice
+		values += 'Avg=%s,' % avgPrice
+		values += 'SellVol=%s,' % sellVol
+		values += 'BuyVol=%s' % buyVol
+		
+		cond = 'Time="%s"' % time
+
+		self.db.update(dataTable, cond, values)
+		
+	# Append and possibly update all the records in dataFile to datatable.
+	def appendUpdateRecords (self, dataFile, dataTable):
+		self.prepareImport(dataTable)
+		for line in fileinput.input(dataFile):
+			self.appendUpdateToTable(line.strip(), dataTable)
+		
 	# Get the Time (the first) field from records file.
-	def getRecordTime(self, record):
-		return self.getRecordField(record, 1)
+	def getDirRecordTime (self, record):
+		return self.getRecordFieldSepBySpace(record, 1)
 	
 	# Get the Time (the second) field from records file.
-	def getRecordData(self, record):
-		return self.getRecordField(record, 2)
+	def getDirRecordData (self, record):
+		return self.getRecordFieldSepBySpace(record, 2)
 	
 	# Import data records in a directory to database.
 	def importFromDir (self, directory, dataTable):
@@ -55,13 +131,13 @@ class WenhuaImport(IMPORT.Import):
 			#print lLine
 			#print cLine	
 			
-			Time = self.getRecordTime(oLine)
-			Open = self.getRecordData(oLine)
-			Highest = self.getRecordData(hLine)
-			Lowest = self.getRecordData(lLine)
-			Close = self.getRecordData(cLine)
+			time = self.getDirRecordTime(oLine)
+			oPrice = self.getDirRecordData(oLine)
+			hPrice = self.getDirRecordData(hLine)
+			lPrice = self.getDirRecordData(lLine)
+			cPrice = self.getDirRecordData(cLine)
 			
-			values = '"%s", %s, %s, %s, %s, 0, Null, Null, Null, Null' % (Time, Open, Highest, Lowest, Close)
+			values = '"%s", %s, %s, %s, %s, 0, Null, Null, Null, Null' % (time, oPrice, hPrice, lPrice, cPrice)
 			
 			#print values
 			
@@ -75,7 +151,7 @@ class WenhuaImport(IMPORT.Import):
 	# processRawRecords should ONLY be used combined with importFromDir(), 
 	# which aims to remove the uesless header and descriptions on the top 
 	# of data records imported from WenHua.
-	def processRawRecords(self, directory, lines=43):
+	def processRawRecords (self, directory, lines=43):
 		oFile = '%s/o.txt' % (directory)
 		hFile = '%s/h.txt' % (directory)
 		lFile = '%s/l.txt' % (directory)

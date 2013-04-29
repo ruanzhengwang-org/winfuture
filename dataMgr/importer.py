@@ -40,15 +40,24 @@ class Import:
 			sqls = 'insert %s (select * from %s where Time >= \'%s\' order by Time asc)' % (tableTo, tableFrom, tFrom)
 		else:
 			sqls = 'insert %s (select * from %s where Time >= \'%s\' and Time <= \'%s\' order by Time asc)' % (tableTo, tableFrom, tFrom, tTo)
-		
 		res = self.db.execSql(sqls)
 		
 		#print 'partReimportTo'
 		return res
 		
-	# Get value from the field specifed by $field from a record.
-	def getRecordField(self, record, field=1):
+	# Get the value from the field specifed by $field from a $record in which 
+	# each field is separated by space.
+	def getRecordFieldSepBySpace(self, record, field=1):
 		cmdStr = 'echo "%s" | awk \'{print $%d}\' ' % (record, field)
+		res = os.popen(cmdStr.strip())
+		#print res.read().strip()
+		#print res
+		return res.read().strip()
+	
+	# Get the value from the field specifed by $field from a $record in which 
+	# each field is separated by comma.
+	def getRecordFieldSepByComma(self, record, field=1):
+		cmdStr = 'echo "%s" | awk \'BEGIN{FS=","}END{print $%d}\' ' % (record, field)
 		res = os.popen(cmdStr.strip())
 		#print res.read().strip()
 		#print res
