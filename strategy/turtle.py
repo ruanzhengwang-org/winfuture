@@ -176,7 +176,14 @@ class Turtle(FUT.Futures):
 		#lcDateSet = self.dateSet
 		time = lcDateSet.firstDate()
 		
+		days = 0
+		
 		while time is not None:
+			days += 1
+			if days <= 10:
+				time= lcDateSet.getSetNextDate()
+				continue
+			
 			if self.hitShortSignal(time):
 				self.doShort(lcDateSet, time);
 			elif self.hitLongSignal(time):
