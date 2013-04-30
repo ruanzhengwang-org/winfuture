@@ -159,6 +159,16 @@ class Turtle(FUT.Futures):
 		
 	def hitLongSignal (self, date):
 		return
+	
+	# End of a test run. Close all opened positions before stop test.
+	def endRun (self, mode):
+		if self.curPostion():
+			time = self.dateSet.lastDate()
+			price = self.data.getClose(time)
+			self.closeAllPostion(price, mode)
+			print "	[%s] [%s] Clear all! close %s" % (mode, time, price)
+			
+		return
 		
 	def run (self):
 		if self.checkAttrs() is False:
@@ -173,6 +183,7 @@ class Turtle(FUT.Futures):
 		time = lcDateSet.firstDate()
 		
 		days = 0
+		mode = None
 		
 		while time is not None:
 			days += 1
@@ -181,11 +192,18 @@ class Turtle(FUT.Futures):
 				continue
 			
 			if self.hitShortSignal(time):
+				mode = 'short'
 				self.doShort(lcDateSet, time);
 			elif self.hitLongSignal(time):
+				mode = 'long'
 				self.doLong(lcDateSet, time);
+			else:
+				mode = None
 
 			time= lcDateSet.getSetNextDate()
+			
+		if mode is not None:
+			self.endRun(mode)
 	
 	# Get the lowest value for a field within recent $days counted from $date.
 	def lowestByDate (self, date, days, field='Close'):
