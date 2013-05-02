@@ -38,25 +38,22 @@ class TurtData:
 
 class Turtle(FUT.Futures):
 	def __init__ (self, futName, dataTable, tradeTable, database='futures'):
-		self.futName = futName
+		FUT.Futures.__init__(self, futName)
 		self.database = database
 		self.dataTable = dataTable
 		self.data = data.Data(database, dataTable)
 		self.dateSet = DATE.Date(database, dataTable)
 		self.tradeTable = tradeTable
 		self.tradeRec = trade.Trade(database, tradeTable)
-		self.maxPos = None
-		self.minPos = None
-		self.minPosIntv = None
-		self.pList = []
-		self.profit = 0	
+
 		#print "Turtle initialized!"
 		return
 	
 	def __exit__ (self):
+		FUT.Futures.__exit__(self)
 		return
 	
-	# Helper
+	# Below are helper functions used to update Tr and Atr, and only used locally.
 	def __updateTr (self, table, time, ltr):
 		#print time, 'ltr', ltr
 		turtDat = TurtData(self.database, table)
@@ -97,9 +94,8 @@ class Turtle(FUT.Futures):
 
 		return ltr
 		
-	def atr (self, table=None):
-		if table is None:
-			table = self.dataTable
+	def atr (self):
+		table = self.dataTable
 	
 		i = 0
 		atr = 0
@@ -163,6 +159,16 @@ class Turtle(FUT.Futures):
 		
 	def hitLongSignal (self, date):
 		return
+	
+	# End of a test run. Close all opened positions before stop test.
+	def endRun (self, mode):
+		if self.curPostion():
+			time = self.dateSet.lastDate()
+			price = self.data.getClose(time)
+			self.closeAllPostion(price, mode)
+			print "	[%s] [%s] Clear all! close %s" % (mode, time, price)
+			
+		return
 		
 	def run (self):
 		if self.checkAttrs() is False:
@@ -176,85 +182,34 @@ class Turtle(FUT.Futures):
 		#lcDateSet = self.dateSet
 		time = lcDateSet.firstDate()
 		
+		days = 0
+		mode = None
+		
 		while time is not None:
+			days += 1
+			if days <= 10:
+				time= lcDateSet.getSetNextDate()
+				continue
+			
 			if self.hitShortSignal(time):
+				mode = 'short'
 				self.doShort(lcDateSet, time);
 			elif self.hitLongSignal(time):
+				mode = 'long'
 				self.doLong(lcDateSet, time);
+			else:
+				mode = None
 
 			time= lcDateSet.getSetNextDate()
+			
+		if mode is not None:
+			self.endRun(mode)
 	
-	# Get the 'lowest' in $days before $date.
+	# Get the lowest value for a field within recent $days counted from $date.
 	def lowestByDate (self, date, days, field='Close'):
 		return self.data.lowestByDate(date, days, field)
 		
-	# Get the 'highest' in $days before $date.
+	# Get the highest value for a field within recent $days counted from $date.
 	def highestByDate (self, date, days, field='Close'):
 		return self.data.highestByDate(date, days, field)
 	
-	def showProfit (self):
-		print "		****** Total profit %s ******" % (self.profit)	
-	
-	# Position Management Methods.
-	def curPostion (self):
-		return len(self.pList)
-	
-	def emptyPostion (self):
-		self.pList = []
-	
-	def openShortPostion (self, price):
-		if len(self.pList) >= self.maxPos:
-			return
-		self.pList.append(price)
-		print "		-->> Open: %s, poses %s <<--" % (price, len(self.pList))
-		return len(self.pList)
-		
-	def openLongPostion (self, price):
-		if len(self.pList) >= self.maxPos:
-			return
-		self.pList.append(price)
-		print "		-->> Open: %s, poses %s <<--" % (price, len(self.pList))
-		return len(self.pList)
-		
-	def closeShortPostion (self, price):
-		if len(self.pList) == 0:
-			return
-		profit = self.pList.pop() - price
-		self.profit = self.profit + profit
-		print "		<<-- Close: profit %s, poses %s -->>" % (profit, len(self.pList))
-		if len(self.pList) == 0:
-			self.showProfit()
-			
-		return len(self.pList)
-	
-	def closeLongPostion (self, price):
-		if len(self.pList) == 0:
-			return
-		profit = price - self.pList.pop()
-		self.profit = self.profit + profit
-		print "		<<-- Close: profit %s, poses %s -->>" % (profit, len(self.pList))
-		if len(self.pList) == 0:
-			self.showProfit()
-			
-		return len(self.pList)
-		
-	def closeAllPostion (self, price, short):
-		while len(self.pList):
-			if short is 'short':
-				poses = self.closeShortPostion(price)
-			else:
-				poses = self.closeLongPostion(price)
-					
-		return len(self.pList)
-			
-	def closeMultPostion (self, poses, price, short):
-		i = 0
-		while len(self.pList) and i < poses:
-			if short is 'short':
-				poses = self.closeShortPostion(price)
-			else:
-				poses = self.closeLongPostion(price)
-			i = i + 1
-		
-		return len(self.pList)
-		
