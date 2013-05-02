@@ -107,18 +107,4 @@ def testColors():
                         
 if __name__ == "__main__":
 	""" """
-	#testColors()
-	dis=PrintColor()
-	dis.addTemplete("dgw",colorAttr['def'],colorTxt['g'],colorBg['w'])
-	dis.addTemplete("drw",colorAttr['def'],colorTxt['r'],colorBg['w'])
-	dis.addTemplete("dbbl",colorAttr['def'],colorTxt['b'],colorBg['bl'])
-	print dis.templete
-	args=[]
-	args.append(('dgw','dgw'))
-	args.append(('drw','drw'))
-	args.append(('dbbl','dbbl'))
-	args.append(('dbbl','abcd'))
-	#args.append(('wrong','wrong'))
-	print args
-	dis.printColor(*args)
-
+	pass
