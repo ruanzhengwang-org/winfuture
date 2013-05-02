@@ -1,0 +1,5 @@
+*.py[obc]
+*.sys
+*.tmp
+tmp/*
+sandbox/*
