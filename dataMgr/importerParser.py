@@ -9,6 +9,14 @@ from optparse import OptionParser
 
 import dataMgr.whImporter as IMPORT
 
+# Drops all Future tables listed in @tables.
+def dropFutureTables (imp, tables):
+	tableSet = tables.split(',')
+	
+	for table in tableSet:
+		imp.dropFutureTable(table)
+		print "Dropped '%s'. " % table
+
 # Importer subsystem option handler transfering options to actions.
 def importerOptionsHandler (options, args):
 	imp = None
@@ -20,8 +28,8 @@ def importerOptionsHandler (options, args):
 	
 	if options.dropTable:
 		print "\nDropping '%s' from database '%s'...\n" % (options.dropTable, options.database)
-		imp.dropFutureTable(options.dropTable)
-	
+		dropFutureTables(imp, options.dropTable)
+		
 	if options.mode == 'dir':
 		# 'directory' mode, import data records from a data directory to data table.
 		
