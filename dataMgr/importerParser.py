@@ -19,7 +19,7 @@ def importerOptionsHandler (options, args):
 		return
 	
 	if options.dropTable:
-		print "\nDrop '%s' from database '%s'...\n" % (options.dropTable, options.database)
+		print "\nDropping '%s' from database '%s'...\n" % (options.dropTable, options.database)
 		imp.dropFutureTable(options.dropTable)
 	
 	if options.mode == 'dir':
@@ -78,7 +78,7 @@ def importerOptionsHandler (options, args):
 		
 		return imp.appendUpdateRecords(file, table)
 		
-	elif options.mode == 'depart':
+	elif options.mode == 'export':
 		file = options.dataFile
 		table = options.dataTable
 		if not options.dataTable or not options.extra:
@@ -98,7 +98,7 @@ def importerOptionsHandler (options, args):
 		if len(time) == 2:
 			endDate = time[1]
 
-		print "\nDeparting '%s' to '%s' from '%s' to '%s'...\n" % (table[0], table[1], time[0], endDate)
+		print "\nExporting '%s' to '%s' from '%s' to '%s'...\n" % (table[0], table[1], time[0], endDate)
 		
 		if endDate == 'Now':
 			imp.partReimport(table[0], table[1], time[0])
