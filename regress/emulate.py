@@ -13,7 +13,35 @@ import thread
 import time
 import strategy.turt1 as turt1
 import tick
+import runstat
 
+# Log management.
+class Log:
+	def __init__ (self, logName):
+		self.logName = logName
+		try:
+			self.logObj = open(logName, 'w')
+		except:
+			print "Open log file '%s' failed!" % logName
+			return
+		return
+	
+	def __exit__ (self):
+		self.logObj.close()
+		return
+	
+	# Append a log at the end of log file.
+	def append (self, logs):
+		try:
+			self.logObj.write('%s\n' % logs)
+		except:
+			print "Writing log to '%s' failed!" % self.logName
+			return
+		
+	# Close the log file.
+	def close (self):
+		self.logObj.close()
+			
 # Common attributes used for strategy to do regression. 
 class CommonAttrs:
 	def __init__ (self, maxAddPos, minPos, minPosIntv, priceUnit):
@@ -33,6 +61,7 @@ class RunControl:
 						# if should take actions.
 		self.attrs = attrs		# Common attributes used for strategy to do regression.
 		self.applied = applied		# 'True' means this control block is occupied by a thread.
+		self.log = None			# Log object if not None, which helps manage logs in regression.
 		return
 	
 	# Judge if self.tick matches a time tick.
@@ -79,6 +108,10 @@ class RunControl:
 		self.lock.acquire()
 		self.acted = True
 		self.lock.release()
+		
+	# Enable storing logs.
+	def enableStoreLogs(self, logObj):
+		self.log = logObj
 		
 # Run Time Control Block Set containing a set of Run Control blocks, 
 # necessary for an emulation.
@@ -207,24 +240,39 @@ def emulationThreadEnd (runCtrl):
 	#print 'emulationThread acted %d' % runCtrl.acted
 	runCtrl.acted = True
 	runCtrl.lock.release()
+	
+	if runCtrl.log:
+		runCtrl.log.close()
+		
 	thread.exit_thread()
 	return
 
 # Entry for an emulation thread.
 def emulationThreadStart (strategy, futCode, runCtrl):
 	strt1 = None
+	runStat = runstat.RunStat(futCode)
+	
 	if strategy == 'turt1':
-		strt1 = turt1.Turt1 (futCode, '%s_dayk' % futCode, 'dummy', 'history')
+		strt1 = turt1.Turt1 (futCode, '%s_dayk' % futCode, 'dummy', 'history', runStat)
 	else:
 		print "Bad strategy, only supports 'turt1' right now..."
 		emulationThreadEnd(runCtrl)
 		return
 		
+	# Enable storing logs.
+	logTemp = 'logs/%s.log' % futCode	
+	futLog = Log(logTemp)
+	runCtrl.enableStoreLogs(futLog)
+	
 	strt1.setAttrs(runCtrl.attrs.maxAddPos, runCtrl.attrs.minPos, 
 			runCtrl.attrs.minPosIntv, runCtrl.attrs.priceUnit)
+			
+	# Enable emulation mode for strategy.	
 	strt1.enableEmulate(runCtrl)
 	strt1.run()
-	
+	if strt1.runStat is not None:
+		strt1.runStat.showStat()
+		
 	emulationThreadEnd(runCtrl)
 
 # Emulation Core.
@@ -297,7 +345,7 @@ if __name__ == '__main__':
 	runCtrlSet.add(runCtrl1)
 	runCtrlSet.add(runCtrl2)
 	
-	emu = Emulate('turt11', runCtrlSet, futList)
+	emu = Emulate('turt1', runCtrlSet, futList)
 	emu.run()
 	
 	
