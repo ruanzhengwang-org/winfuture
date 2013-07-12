@@ -23,6 +23,7 @@ class Futures(STRT.Strategy):
 		self.totalProfit = 0		# Total profit in one time of test.
 		self.profit = 0			# The current profit for a time of business.
 		self.runStat = runStat		# Count runtime statistics.
+		self.emuRunCtrl = None		# The emulation run control block.
 		
 		return
 	
@@ -44,8 +45,8 @@ class Futures(STRT.Strategy):
 		return False
 			
 	def showProfit (self):
-		print "		++++++ Business profit %s ++++++" % (self.profit)
-		print "		****** Total profit %s ******" % (self.totalProfit)
+		self.log("		++++++ Business profit %s ++++++" % (self.profit))
+		self.log("		****** Total profit %s ******" % (self.totalProfit))
 	
 	# Position Management Methods.
 	def curPostion (self):
@@ -59,14 +60,14 @@ class Futures(STRT.Strategy):
 		if self.curPostion() >= self.maxAddPos:
 			return
 		self._pList.append(price)
-		print "		-->> Open: %s, poses %s <<--" % (price, self.curPostion())
+		self.log("		-->> Open: %s, poses %s <<--" % (price, self.curPostion()))
 		return self.curPostion()
 		
 	def openLongPostion (self, price):
 		if self.curPostion() >= self.maxAddPos:
 			return
 		self._pList.append(price)
-		print "		-->> Open: %s, poses %s <<--" % (price, self.curPostion())
+		self.log("		-->> Open: %s, poses %s <<--" % (price, self.curPostion()))
 		return self.curPostion()
 		
 	def closeShortPostion (self, price):
@@ -82,7 +83,7 @@ class Futures(STRT.Strategy):
 		if self.runStat is not None:
 			self.runStat.update(profit)
 			
-		print "		<<-- Close: profit %s, poses %s -->>" % (profit, self.curPostion())
+		self.log("		<<-- Close: profit %s, poses %s -->>" % (profit, self.curPostion()))
 		if self.curPostion() == 0:
 			self.showProfit()
 			# If need do runtime statistics, update status.
@@ -104,7 +105,7 @@ class Futures(STRT.Strategy):
 		if self.runStat is not None:
 			self.runStat.update(profit)
 			
-		print "		<<-- Close: profit %s, poses %s -->>" % (profit, self.curPostion())
+		self.log("		<<-- Close: profit %s, poses %s -->>" % (profit, self.curPostion()))
 		if self.curPostion() == 0:
 			self.showProfit()
 			# If need do runtime statistics, update status.
@@ -138,3 +139,18 @@ class Futures(STRT.Strategy):
 		print '\nNo assistant found!\n'
 		return
 	
+	# Switch on emulation mode. In emulation mode, strategy will be run in a 
+	# thread and needs to update typically run() method (or other methods, such 
+	# as, doShort, doLong, related to tick) to receive ticks from main thread 
+	# (emulate.py module) and then take all operations proposed in one tick.
+	def enableEmulate (self, runCtrl):
+		self.emuRunCtrl = runCtrl
+	
+	# Manage storing logs.
+	def log (self, logMsg, *args):
+		logs = logMsg % (args)
+		if self.emuRunCtrl and self.emuRunCtrl.log:
+			self.emuRunCtrl.log.append(logs)
+		else:
+			print logs
+		

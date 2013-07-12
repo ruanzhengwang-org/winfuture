@@ -196,7 +196,7 @@ class Turtle(FUT.Futures):
 			time = self.dateSet.lastDate()
 			price = self.data.getClose(time)
 			self.closeAllPostion(price, mode)
-			print "	[%s] [%s] Clear all! close %s" % (mode, time, price)
+			self.log("	[%s] [%s] Clear all! close %s" % (mode, time, price))
 			
 		return
 		
@@ -208,7 +208,10 @@ class Turtle(FUT.Futures):
 			"""
 			return
 		
-		print '\n\n	<<<<<<<<<<< Run %s >>>>>>>>>>>	\n\n' % self.futName
+		if self.emuRunCtrl is not None:
+			self.log('\n\n	<<<<<<<<<<< Run %s (Emulated Mode) >>>>>>>>>>>	\n\n' % self.futName)
+		else:
+			self.log('\n\n	<<<<<<<<<<< Run %s >>>>>>>>>>>	\n\n' % self.futName)
 		
 		lcDateSet = DATE.Date(self.database, self.dataTable)
 		#lcDateSet = self.dateSet
@@ -218,9 +221,20 @@ class Turtle(FUT.Futures):
 		mode = None
 		
 		while time is not None:
+			if self.emuRunCtrl is not None:
+				#self.emuRunCtrl.lock.acquire()
+				#if not self.emuRunCtrl.acted and self.emuRunCtrl.matchTick(time):
+					#self.emuRunCtrl.lock.release()
+				#else:
+					#self.emuRunCtrl.lock.release()
+					#self.emuRunCtrl.tinyHltLoop()
+					#continue
+				if not self.emuRunCtrl.tickIsReady(time):
+					continue
+						
 			days += 1
 			if days <= 10:
-				time= lcDateSet.getSetNextDate()
+				time = self.moveToNextTick(lcDateSet)
 				continue
 			
 			price = self.data.getClose(time)
@@ -240,7 +254,7 @@ class Turtle(FUT.Futures):
 			else:
 				mode = None
 
-			time= lcDateSet.getSetNextDate()
+			time = self.moveToNextTick(lcDateSet)
 			
 		if mode is not None:
 			self.endRun(mode)
@@ -260,4 +274,11 @@ class Turtle(FUT.Futures):
 	# Return the highest value in $days up to $date (including $date).
 	def highestUpToDate (self, date, days, field='Close'):
 		return self.data.highestUpToDate(date, days, field)
+	
+	# Move to next tick (typically next day), and set acted if in emulation mode 
+	# noticing main thread actions have been taken for this tick.
+	def moveToNextTick (self, dateSet):
+		if self.emuRunCtrl is not None:
+			self.emuRunCtrl.setActed()
+		return dateSet.getSetNextDate()
 	
